@@ -19,9 +19,20 @@ DESCRIPTION
       provision and manage redis instances easily.
 
 COMMANDS
-
       help        Show this usage guide
 
+      setup PATH  Provision a new Redis instance on the specified path.
+
+      start PATH  Start the previously provisioned instance located
+                  on the specified path.
+
+      stop PATH   Stop a running instance identified by a specific path.
+
+      info PATH   Get the necessary information for an instance, most notably
+                  a `REDIS_URL` which encapsulates all of the connection
+                  information necessary to access the instance.
+
+OPTIONS
       -m          Customize the amount of max memory usable for the instance.
                   (Defaults to no limit.)
 
@@ -45,7 +56,7 @@ if ARGV.empty?
 end
 
 rprov = Rprov.new
-pp    = Rprov::PrintDecorator.new(rprov)
+decor = Rprov::PrintDecorator.new(rprov)
 
 begin
   command_and_path = Clap.run ARGV,
@@ -55,10 +66,11 @@ begin
     "--paranoid" => lambda { rprov.paranoid = true }
 
   Clap.run command_and_path,
-    "setup"      => pp.method(:setup),
-    "start"      => pp.method(:start),
-    "stop"       => pp.method(:stop),
+    "setup"      => decor.method(:setup),
+    "start"      => decor.method(:start),
+    "stop"       => decor.method(:stop),
     "info"       => rprov.method(:info),
+
 rescue ArgumentError
   puts help
 end
