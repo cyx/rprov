@@ -1,5 +1,3 @@
-require "forwardable"
-
 class Rprov
   class PrintDecorator
     attr :component
