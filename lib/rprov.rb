@@ -9,8 +9,8 @@ class Rprov
 
   VERSION = "0.0.1"
 
-  autoload :Config,         "rprov/config"
-  autoload :PrintDecorator, "rprov/print_decorator"
+  autoload :Config,    "rprov/config"
+  autoload :Decorator, "rprov/decorator"
 
   attr_accessor :memory, :host, :paranoid
 

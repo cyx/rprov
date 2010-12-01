@@ -1,5 +1,5 @@
 class Rprov
-  class PrintDecorator
+  class Decorator
     attr :component
 
     def initialize(component)
