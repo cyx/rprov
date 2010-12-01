@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+
+help = <<-EOT
+RPROV(1)
+
+NAME
+      rprov -- Redis Provisioning
+
+SYNOPSIS
+      rprov setup /some/path -m 1gb -h hostname
+      rprov setup /some/path -m 1gb --paranoid
+
+      rprov start /some/path
+      rprov stop  /some/path
+      rprov info  /some/path
+
+DESCRIPTION
+      Rprov is a simple ruby command line utility which helps you
+      provision and manage redis instances easily.
+
+COMMANDS
+
+      help        Show this usage guide
+
+      -m          Customize the amount of max memory usable for the instance.
+                  (Defaults to no limit.)
+
+      -h          Specify the bind address for this redis instance.
+                  (Defaults to 127.0.0.1)
+
+      --paranoid  Removes some of the commands meant to be used by sysadmins
+                  and renames some into a cryptic, non-guessable one.
+
+
+EOT
+
+$:.unshift(File.expand_path("../lib", File.dirname(__FILE__)))
+
+require "clap"
+require "rprov"
+
+if ARGV.empty?
+  puts help
+  exit
+end
+
+rprov = Rprov.new
+pp    = Rprov::PrintDecorator.new(rprov)
+
+begin
+  command_and_path = Clap.run ARGV,
+    "help"       => lambda { puts help; exit },
+    "-m"         => rprov.method(:memory=),
+    "-h"         => rprov.method(:host=),
+    "--paranoid" => lambda { rprov.paranoid = true }
+
+  Clap.run command_and_path,
+    "setup"      => pp.method(:setup),
+    "start"      => pp.method(:start),
+    "stop"       => pp.method(:stop),
+    "info"       => rprov.method(:info),
+rescue ArgumentError
+  puts help
+end

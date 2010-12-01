@@ -1,0 +1,32 @@
+<%- require "./lib/rprov" -%>
+<%- require "date" -%>
+Gem::Specification.new do |s|
+  s.name = 'rprov'
+  s.version = "<%= Rprov::VERSION %>"
+  s.summary = %{Redis Provisioning}
+  s.description = %{Rprov is a simple command line utility which helps
+                    you provision and manage Redis instances easily.}
+  s.date = "<%= Date.today.to_s %>"
+  s.authors = ["Cyril David, "Michel Martens", "Damian Janowski"]
+  s.email = ["cyx@pipetodevnull.com", "michel@soveran.com", "djanowski@dimaion.com"]
+  s.homepage = "http://github.com/cyx/rprov"
+
+  s.specification_version = 2 if s.respond_to? :specification_version=
+
+  s.files = <%= Dir[
+    "lib/**/*.rb",
+    "README*",
+    "LICENSE",
+    "Rakefile",
+    "test/**/*.*",
+    "templates/*.erb"
+  ].inspect %>
+
+  s.require_paths = ['lib']
+
+  s.add_dependency "redis"
+  s.add_dependency "nest"
+  s.add_development_dependency "cutest"
+  s.has_rdoc = false
+  s.executables.push "rprov"
+end
