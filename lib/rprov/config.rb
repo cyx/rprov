@@ -27,7 +27,7 @@ class Rprov
       @password, @port = redis.hmget(:password, :port)
 
       DEFAULTS.each do |key, value|
-        instance_variable_set(:"@#{key}", redis.hget(key) || value)
+        send("%s=" % key, redis.hget(key) || value)
       end
     rescue Errno::ECONNREFUSED
       raise Errno::ECONNREFUSED, "You need to setup a master redis server."
