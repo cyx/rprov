@@ -62,15 +62,9 @@ end
 test "setting up on an already setup path" do |redis, rprov|
   rprov.setup(TMP)
 
-  caught = true
-
-  path = catch :already_exists do
+  assert_raise Rprov::Conflict do
     rprov.setup(TMP)
-    caught = false
   end
-
-  assert caught
-  assert path == TMP
 
   configs =
     redis.keys("rprov:config:*").reject { |k|

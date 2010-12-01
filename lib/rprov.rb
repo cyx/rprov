@@ -5,6 +5,8 @@ require "erb"
 require "fileutils"
 
 class Rprov
+  Conflict = Class.new(StandardError)
+
   VERSION = "0.0.1"
 
   autoload :Config,         "rprov/config"
@@ -23,7 +25,7 @@ class Rprov
   end
 
   def setup(path)
-    throw(:already_exists, path) if redis_conf(path)
+    raise Conflict if redis_conf(path)
 
     FileUtils.mkdir_p(path) if not File.exist?(path)
 

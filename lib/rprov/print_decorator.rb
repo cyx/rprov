@@ -37,9 +37,9 @@ class Rprov
     def setup(path)
       init("Setting up Redis Instance: #{path}")
 
-      path = catch(:already_exists) { component.setup(path) }
-
-      if path
+      begin
+        component.setup(path)
+      rescue Rprov::Conflict
         fail("The path #{path} already exists.")
       else
         say("Done!")
