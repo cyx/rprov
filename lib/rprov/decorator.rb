@@ -7,28 +7,24 @@ class Rprov
     end
 
     def start(path)
-      init("Starting Redis Instance: #{path}")
+      init("Starting Redis Instance: `#{path}`")
 
-      component.start(path)
-
-      if $?.success?
-        say("Done!")
-      else
-        if not File.exist?(path)
-          fail("#{path} doesn't exist. Try `rprov setup #{path}` first.")
-        else
-          fail("Unable to start. There might be a problem with the config.")
-        end
+      begin
+        component.start(path)
+      rescue Rprov::Missing
+        fail_missing(path)
       end
     end
 
     def stop(path)
-      init("Stopping Redis Instance: #{path}")
+      init("Stopping Redis Instance: `#{path}`")
 
       begin
         component.stop(path)
       rescue Errno::ECONNREFUSED
         fail("The instance appears to be down.")
+      rescue Rprov::Missing
+        fail_missing(path)
       else
         say("Done!")
       end
@@ -46,6 +42,14 @@ class Rprov
       end
     end
 
+    def info(path)
+      begin
+        component.info(path)
+      rescue Rprov::Missing
+        fail_missing(path)
+      end
+    end
+
   private
     def init(str)
       puts "-----> #{str}"
@@ -53,6 +57,11 @@ class Rprov
 
     def fail(str)
       puts "!!     #{str}"
+    end
+
+    def fail_missing(path)
+      fail("Tried to run rprov on non-existent path `#{path}`.")
+      fail("Maybe try `rprov setup #{path}` first?")
     end
 
     def say(str)

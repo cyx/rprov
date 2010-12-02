@@ -6,6 +6,7 @@ require "fileutils"
 
 class Rprov
   Conflict = Class.new(StandardError)
+  Missing  = Class.new(StandardError)
 
   VERSION = "0.0.1"
 
@@ -15,11 +16,11 @@ class Rprov
   attr_accessor :memory, :host, :paranoid
 
   def start(path)
-    `redis-server #{redis_conf(path)}`
+    exec("redis-server #{redis_conf!(path)}")
   end
 
   def stop(path)
-    conf  = Rprov::Config.new(key(path))
+    conf  = Config.new(key(path))
     redis = Redis.connect(:url => conf.url)
     redis.client.process(conf.shutdown_cmd)
   end
@@ -51,10 +52,14 @@ class Rprov
 
 private
   def key(path)
-    redis_conf(path)[/redis\.(.*?)\.conf/, 1]
+    redis_conf!(path)[/redis\.(.*?)\.conf/, 1]
   end
 
   def redis_conf(path)
     Dir[File.expand_path(File.join(path, "redis.*.conf"))].first
+  end
+
+  def redis_conf!(path)
+    redis_conf(path) or raise(Missing)
   end
 end
