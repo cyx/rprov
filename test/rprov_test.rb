@@ -168,3 +168,38 @@ scope do
     rprov.stop(TMP)
   end
 end
+
+# info
+scope do
+  setup do
+    [Redis.connect, Rprov.new]
+  end
+
+  test "info" do |redis, rprov|
+    silenced do
+      rprov.setup(TMP)
+    end
+
+    out = capture { rprov.info(TMP) }
+
+    conf = Rprov::Config.new(redis_conf_id)
+
+    expected = (<<-EOT).gsub(/^ {4}/, "")
+
+    REDIS_URL:
+        #{conf.url}
+
+    Run `rprov start #{TMP}` to start this instance
+    EOT
+
+    assert expected == out
+  end
+
+  test "running info on a non-existent setup" do |redis, rprov|
+    assert ! redis_conf
+
+    assert_raise Rprov::Missing do
+      capture { rprov.info(TMP) }
+    end
+  end
+end
