@@ -38,6 +38,10 @@ class Rprov
       self.vm_enabled = "yes"
     end
 
+    def url
+      "redis://:#{password}@#{host}:#{port}"
+    end
+
     def paranoid=(val)
       @paranoid = val
 
@@ -65,7 +69,7 @@ class Rprov
     end
 
     def self.redis
-      Nest.new(:rprov)[:config]
+      @redis ||= Nest.new(:rprov)[:config]
     end
 
   private
@@ -79,7 +83,7 @@ class Rprov
     end
 
     def redis
-      self.class.redis[key]
+      @redis ||= self.class.redis[key]
     end
 
     def self.gen_port

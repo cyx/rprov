@@ -6,6 +6,12 @@ def conf_value(data, key)
  data[/^#{key}\s+(.*)$/, 1]
 end
 
+test "url" do
+  c = Rprov::Config.generate
+
+  assert "redis://:#{c.password}@#{c.host}:#{c.port}" == c.url
+end
+
 test "generating" do |r|
   config = Rprov::Config.generate
 

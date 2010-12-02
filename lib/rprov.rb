@@ -20,7 +20,7 @@ class Rprov
 
   def stop(path)
     conf  = Rprov::Config.new(key(path))
-    redis = Redis.connect(:port => conf.port, :password => conf.password)
+    redis = Redis.connect(:url => conf.url)
     redis.client.process(conf.shutdown_cmd)
   end
 
@@ -44,9 +44,9 @@ class Rprov
 
   def info(path)
     key = key(path)
-    c = Config.new(key)
+    cnf = Config.new(key)
 
-    puts "\nREDIS_URL:\n    redis://:#{c.password}@#{c.host}:#{c.port}"
+    puts "\nREDIS_URL:\n    #{cnf.url}"
     puts "\nRun `rprov start #{path}` to start this instance"
   end
 
