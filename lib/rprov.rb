@@ -43,10 +43,9 @@ class Rprov
   end
 
   def info(path)
-    key = key(path)
-    cnf = Config.new(key)
+    conf = Config.new(key(path))
 
-    puts "\nREDIS_URL:\n    #{cnf.url}"
+    puts "\nREDIS_URL:\n    #{conf.url}"
     puts "\nRun `rprov start #{path}` to start this instance"
   end
 
