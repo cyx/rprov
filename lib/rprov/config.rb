@@ -14,9 +14,9 @@ class Rprov
     attr :password
     attr :port
     attr :paranoid
+    attr :path
 
     attr_accessor :host
-    attr_accessor :path
     attr_accessor :appendfsync
     attr_accessor :vm_enabled
     attr_accessor :vm_max_memory
@@ -36,6 +36,10 @@ class Rprov
     def memory=(memory)
       self.vm_max_memory = memory
       self.vm_enabled = "yes"
+    end
+
+    def path=(path)
+      @path = path.to_s.gsub(/\/*$/, "")
     end
 
     def url

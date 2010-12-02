@@ -6,6 +6,13 @@ def conf_value(data, key)
  data[/^#{key}\s+(.*)$/, 1]
 end
 
+test "path assignment" do
+  c = Rprov::Config.generate
+  c.path = "/some/path/here/"
+
+  assert c.path == "/some/path/here"
+end
+
 test "url" do
   c = Rprov::Config.generate
 
