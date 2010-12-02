@@ -19,6 +19,15 @@ prepare do
   redis.flushdb
 end
 
+# Since Kernel::exec transfers control to the external
+# program, we need to change Rprov#exec and use `` instead.
+
+class Rprov
+  def exec(cmd)
+    `#{cmd}`
+  end
+end
+
 module Cleanup
   def test(*args, &block)
     begin
@@ -49,6 +58,9 @@ def silenced
   stdout, $stdout = $stdout, StringIO.new
 
   yield
+
+  $stdout.rewind && $stdout.read
 ensure
   $stdout = stdout
 end
+alias :capture :silenced
