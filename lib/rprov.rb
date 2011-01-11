@@ -41,6 +41,8 @@ class Rprov
     File.open(where, "w") do |file|
       file.write conf.redis_conf
     end
+
+    return conf
   end
 
   def info(path)
