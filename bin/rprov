@@ -69,7 +69,7 @@ begin
     "setup"      => decor.method(:setup),
     "start"      => decor.method(:start),
     "stop"       => decor.method(:stop),
-    "info"       => decor.method(:info),
+    "info"       => decor.method(:info)
 
 rescue ArgumentError
   puts help
